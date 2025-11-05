@@ -1,9 +1,21 @@
-import { Button, Pane } from 'evergreen-ui';
+import { Button, Pane, Badge } from 'evergreen-ui';
 import Link from 'next/link';
 
 import formatDateString from '@/components/MailForm/ScheduledSend/formatDateString';
+import { DemographicOption } from '@/types/demographic';
 
-export default function SuccessPage({ digest = false, schedule = 'now' }) {
+export default function SuccessPage({ digest = false, schedule = 'now', targetDemographic = 'all' }: { digest?: boolean; schedule?: string; targetDemographic?: DemographicOption }) {
+    const getDemographicLabel = () => {
+        switch (targetDemographic) {
+            case 'undergraduates':
+                return 'undergraduates';
+            case 'graduates':
+                return 'graduate students';
+            case 'all':
+            default:
+                return 'all students';
+        }
+    };
     return (
         <Pane
             display='flex'
@@ -32,10 +44,15 @@ export default function SuccessPage({ digest = false, schedule = 'now' }) {
                 </svg>
             </div>
             <h1 className='h1'>Success!</h1>
+            {targetDemographic !== 'all' && (
+                <Badge color="orange" marginTop={10}>
+                    Sent to {getDemographicLabel()}
+                </Badge>
+            )}
             {!digest && schedule === 'now' && (
                 <>
-                    <Pane>
-                        Your email has been sent to all students and will be in
+                    <Pane marginTop={20}>
+                        Your email has been sent to {getDemographicLabel()} and will be in
                         your inbox shortly! We ask that you do not send any
                         additional emails
                         <b> for the next few days</b> to avoid spam.
@@ -59,9 +76,9 @@ export default function SuccessPage({ digest = false, schedule = 'now' }) {
             )}
             {!digest && schedule !== 'now' && (
                 <>
-                    <Pane>
+                    <Pane marginTop={20}>
                         Your email has been successfully scheduled! It will be
-                        sent to all students on
+                        sent to {getDemographicLabel()} on
                         {` ${formatDateString(schedule)}`}. You can modify the
                         scheduled time or delete the email on the Scheduled
                         Emails page.

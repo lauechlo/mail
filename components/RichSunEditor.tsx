@@ -25,6 +25,7 @@ interface RichTextEditorProps {
     getEditor?: (sunEditor: SunEditorCore) => void;
     required?: boolean;
     isDisabled?: boolean;
+    value?: string;
 }
 
 export default function RichTextEditor({
@@ -36,6 +37,7 @@ export default function RichTextEditor({
     getEditor,
     required = false,
     isDisabled = false,
+    value = '',
 }: RichTextEditorProps) {
     // Upload Image to Image Server such as AWS S3, Cloudinary, Cloud Storage, etc..
     const saveToServer = async (file: File) => {
@@ -109,6 +111,7 @@ export default function RichTextEditor({
                 onImageUploadBefore={onImageUploadBefore}
                 onImageUploadError={onImageUploadError}
                 getSunEditorInstance={getEditor}
+                setContents={value}
             />
         </FormField>
     );

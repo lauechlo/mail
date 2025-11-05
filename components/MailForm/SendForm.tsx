@@ -17,6 +17,11 @@ import ErrorMessage from '@/components/ErrorMessage';
 import ScheduleSelectField from '@/components/MailForm/ScheduledSend/ScheduleSelectField';
 import SuccessPage from '@/components/MailForm/SuccessPage';
 import RichTextEditor from '@/components/RichSunEditor';
+import { DemographicSelector } from '@/components/MailForm/DemographicSelector';
+import { TemplateSelector } from '@/components/MailForm/TemplateSelector';
+import { DemographicOption, DEMOGRAPHIC_OPTIONS } from '@/types/demographic';
+import { TemplateType } from '@/types/template';
+import { EMAIL_TEMPLATES } from '@/constants/emailTemplates';
 
 const senderNameDesc = `This is the name of the sender displayed in the email.
 You can either keep it as your name or use the name of your club, department, or 
@@ -33,6 +38,8 @@ export default function Mail({ onSend, onError, errorMessage, success, user }) {
     const [schedule, setSchedule] = useState('now');
     const [showConfirm, setShowConfirm] = useState(false);
     const [showTestConfirm, setShowTestConfirm] = useState(false);
+    const [targetDemographic, setTargetDemographic] = useState<DemographicOption>('all');
+    const [selectedTemplate, setSelectedTemplate] = useState<TemplateType>('blank');
 
     useEffect(() => {
         if (!hasInteracted.current && header !== '') {
@@ -44,6 +51,42 @@ export default function Mail({ onSend, onError, errorMessage, success, user }) {
         }
         setSenderInvalid(sender === '');
     }, [header, sender]);
+
+    const handleTemplateSelect = (type: TemplateType) => {
+        setSelectedTemplate(type);
+        const template = EMAIL_TEMPLATES.find((t) => t.type === type);
+        if (template) {
+            if (template.subjectTemplate) {
+                setHeader(template.subjectTemplate);
+            }
+            setBody(template.bodyTemplate);
+        }
+    };
+
+    const getDemographicConfirmationText = () => {
+        const option = DEMOGRAPHIC_OPTIONS.find((opt) => opt.value === targetDemographic);
+        switch (targetDemographic) {
+            case 'undergraduates':
+                return 'You are about to send an email to all undergraduates at Princeton.';
+            case 'graduates':
+                return 'You are about to send an email to all graduate students at Princeton.';
+            case 'all':
+            default:
+                return 'You are about to send an email to everyone at Princeton.';
+        }
+    };
+
+    const getDemographicTargetText = () => {
+        switch (targetDemographic) {
+            case 'undergraduates':
+                return 'undergraduate residential college listservs';
+            case 'graduates':
+                return 'graduate residential college listservs';
+            case 'all':
+            default:
+                return 'all residential college listservs';
+        }
+    };
 
     const MailForm = (
         <Pane>
@@ -62,6 +105,10 @@ export default function Mail({ onSend, onError, errorMessage, success, user }) {
                 </Link>
             </Pane>
             <ErrorMessage text={errorMessage} />
+            <DemographicSelector
+                value={targetDemographic}
+                onChange={setTargetDemographic}
+            />
             <ScheduleSelectField
                 label='Scheduled Time'
                 description='Send emails now or schedule them up to four days
@@ -96,6 +143,10 @@ export default function Mail({ onSend, onError, errorMessage, success, user }) {
                 value={sender}
                 onChange={(e) => setSender(e.target.value)}
             />
+            <TemplateSelector
+                selectedTemplate={selectedTemplate}
+                onSelectTemplate={handleTemplateSelect}
+            />
             <RichTextEditor
                 onChange={(content) => setBody(content)}
                 onError={onError}
@@ -104,6 +155,7 @@ export default function Mail({ onSend, onError, errorMessage, success, user }) {
                 placeholder='Hello there!'
                 description={`
         This is the content of your email. `}
+                value={body}
             />
             <Pane>
                 <Button
@@ -139,6 +191,7 @@ export default function Mail({ onSend, onError, errorMessage, success, user }) {
                         header,
                         body,
                         schedule,
+                        target_demographic: targetDemographic,
                     });
                     setShowConfirm(false);
                 }}
@@ -153,12 +206,12 @@ export default function Mail({ onSend, onError, errorMessage, success, user }) {
                     alignItems='center'
                 >
                     <InfoSignIcon marginRight={10} />
-                    You are about to send an email to everyone at Princeton.
+                    {getDemographicConfirmationText()}
                 </Pane>
                 <Text>
                     Once you click <b>Send Email</b>, Hoagie will send the email
                     to
-                    <b> all residential college listservs on your behalf</b>.
+                    <b> {getDemographicTargetText()} on your behalf</b>.
                     Your name and NetID will be included at the bottom of the
                     email regardless of the content.
                 </Text>
@@ -211,5 +264,5 @@ export default function Mail({ onSend, onError, errorMessage, success, user }) {
             </Dialog>
         </Pane>
     );
-    return success ? <SuccessPage schedule={schedule} /> : MailForm;
+    return success ? <SuccessPage schedule={schedule} targetDemographic={targetDemographic} /> : MailForm;
 }

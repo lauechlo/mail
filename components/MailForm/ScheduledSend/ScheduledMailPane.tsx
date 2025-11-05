@@ -8,15 +8,29 @@ import {
     Paragraph,
     Dialog,
     InfoSignIcon,
+    Badge,
 } from 'evergreen-ui';
 
 import formatDateString from '@/components/MailForm/ScheduledSend/formatDateString';
 import ScheduleSelectField from '@/components/MailForm/ScheduledSend/ScheduleSelectField';
+import { DemographicOption } from '@/types/demographic';
 
 function ScheduledMailListing({ listing, onDelete, onUpdate }) {
     const [showConfirm, setShowConfirm] = useState(false);
     const [bodyShown, setBodyShown] = useState(false);
     const mailBody = DOMPurify.sanitize(listing.body);
+
+    const getDemographicLabel = (demographic: DemographicOption) => {
+        switch (demographic) {
+            case 'undergraduates':
+                return 'Undergraduates';
+            case 'graduates':
+                return 'Graduates';
+            case 'all':
+            default:
+                return 'All Students';
+        }
+    };
 
     return (
         <Pane
@@ -37,6 +51,14 @@ function ScheduledMailListing({ listing, onDelete, onUpdate }) {
                 <Text>
                     <b>Sender:</b> {listing.sender}
                 </Text>
+                {listing.target_demographic && (
+                    <>
+                        {' '}
+                        <Badge color="orange" marginLeft={8}>
+                            {getDemographicLabel(listing.target_demographic)}
+                        </Badge>
+                    </>
+                )}
                 <br />
                 {bodyShown && (
                     <Pane height='auto' overflow='auto'>
