@@ -91,6 +91,20 @@ export default function Mail({ onSend, onError, errorMessage, success, user }) {
         return 'all students';
     };
 
+    const getEstimatedReach = () => {
+        const UNDERGRAD_COUNT = 4500;
+        const GRAD_COUNT = 1200;
+        return (
+            (demographicSelection.includeUndergrads ? UNDERGRAD_COUNT : 0) +
+            (demographicSelection.includeGrads ? GRAD_COUNT : 0)
+        );
+    };
+
+    const formatScheduleTime = (scheduleValue: string) => {
+        if (scheduleValue === 'now') return 'Immediately';
+        return scheduleValue;
+    };
+
     const MailForm = (
         <Pane>
             <Pane display='flex' justifyContent='space-between'>
@@ -219,6 +233,90 @@ export default function Mail({ onSend, onError, errorMessage, success, user }) {
                     <InfoSignIcon marginRight={10} />
                     {getDemographicConfirmationText()}
                 </Pane>
+
+                {/* Summary Card */}
+                <Pane
+                    background='tint2'
+                    padding={majorScale(2)}
+                    borderRadius={8}
+                    border='default'
+                    marginY={majorScale(2)}
+                >
+                    <Heading size={500} marginBottom={majorScale(2)}>
+                        📧 Email Summary
+                    </Heading>
+                    <Pane>
+                        <Pane
+                            display='flex'
+                            justifyContent='space-between'
+                            marginBottom={majorScale(1)}
+                        >
+                            <Text color='muted' size={400}>
+                                Subject:
+                            </Text>
+                            <Text size={400} fontWeight={600}>
+                                {header || '(No subject)'}
+                            </Text>
+                        </Pane>
+                        <Pane
+                            display='flex'
+                            justifyContent='space-between'
+                            marginBottom={majorScale(1)}
+                        >
+                            <Text color='muted' size={400}>
+                                From:
+                            </Text>
+                            <Text size={400} fontWeight={600}>
+                                {sender}
+                            </Text>
+                        </Pane>
+                        <Pane
+                            display='flex'
+                            justifyContent='space-between'
+                            marginBottom={majorScale(1)}
+                        >
+                            <Text color='muted' size={400}>
+                                When:
+                            </Text>
+                            <Text size={400} fontWeight={600}>
+                                {formatScheduleTime(schedule)}
+                            </Text>
+                        </Pane>
+                        <Pane
+                            display='flex'
+                            justifyContent='space-between'
+                            marginBottom={majorScale(1)}
+                        >
+                            <Text color='muted' size={400}>
+                                Recipients:
+                            </Text>
+                            <Text size={400} fontWeight={600}>
+                                ~{getEstimatedReach().toLocaleString()} students
+                            </Text>
+                        </Pane>
+                        {demographicSelection.includeUndergrads && (
+                            <Text
+                                size={300}
+                                color='muted'
+                                display='block'
+                                marginTop={majorScale(1)}
+                            >
+                                • Undergraduate colleges
+                            </Text>
+                        )}
+                        {demographicSelection.includeGrads && (
+                            <Text
+                                size={300}
+                                color='muted'
+                                display='block'
+                                marginTop={2}
+                            >
+                                • Graduate colleges
+                            </Text>
+                        )}
+                    </Pane>
+                </Pane>
+
                 <Text>
                     Once you click <b>Send Email</b>, Hoagie will send the email
                     to <b>{getDemographicTargetText()} on your behalf</b>. Your
