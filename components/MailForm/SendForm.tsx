@@ -17,6 +17,10 @@ import ErrorMessage from '@/components/ErrorMessage';
 import ScheduleSelectField from '@/components/MailForm/ScheduledSend/ScheduleSelectField';
 import SuccessPage from '@/components/MailForm/SuccessPage';
 import RichTextEditor from '@/components/RichSunEditor';
+import {
+    DemographicCheckboxSelector,
+    DemographicSelection,
+} from '@/components/MailForm/DemographicCheckboxSelector';
 
 const senderNameDesc = `This is the name of the sender displayed in the email.
 You can either keep it as your name or use the name of your club, department, or 
@@ -33,6 +37,12 @@ export default function Mail({ onSend, onError, errorMessage, success, user }) {
     const [schedule, setSchedule] = useState('now');
     const [showConfirm, setShowConfirm] = useState(false);
     const [showTestConfirm, setShowTestConfirm] = useState(false);
+    const [demographicSelection, setDemographicSelection] =
+        useState<DemographicSelection>({
+            includeUndergrads: true,
+            includeGrads: true,
+        });
+    const [showDemographicError, setShowDemographicError] = useState(false);
 
     useEffect(() => {
         if (!hasInteracted.current && header !== '') {
@@ -44,6 +54,42 @@ export default function Mail({ onSend, onError, errorMessage, success, user }) {
         }
         setSenderInvalid(sender === '');
     }, [header, sender]);
+
+    const getDemographicConfirmationText = () => {
+        const { includeUndergrads, includeGrads } = demographicSelection;
+        if (includeUndergrads && includeGrads) {
+            return 'You are about to send an email to all undergraduate and graduate students at Princeton.';
+        } else if (includeUndergrads) {
+            return 'You are about to send an email to all undergraduate students at Princeton.';
+        } else if (includeGrads) {
+            return 'You are about to send an email to all graduate students at Princeton.';
+        }
+        return 'You are about to send an email to everyone at Princeton.';
+    };
+
+    const getDemographicTargetText = () => {
+        const { includeUndergrads, includeGrads } = demographicSelection;
+        if (includeUndergrads && includeGrads) {
+            return 'all residential college listservs';
+        } else if (includeUndergrads) {
+            return 'undergraduate residential college listservs';
+        } else if (includeGrads) {
+            return 'graduate residential college listservs';
+        }
+        return 'all residential college listservs';
+    };
+
+    const getDemographicSuccessText = () => {
+        const { includeUndergrads, includeGrads } = demographicSelection;
+        if (includeUndergrads && includeGrads) {
+            return 'all undergraduate and graduate students';
+        } else if (includeUndergrads) {
+            return 'all undergraduate students';
+        } else if (includeGrads) {
+            return 'all graduate students';
+        }
+        return 'all students';
+    };
 
     const MailForm = (
         <Pane>
@@ -62,6 +108,11 @@ export default function Mail({ onSend, onError, errorMessage, success, user }) {
                 </Link>
             </Pane>
             <ErrorMessage text={errorMessage} />
+            <DemographicCheckboxSelector
+                selection={demographicSelection}
+                onChange={setDemographicSelection}
+                showError={showDemographicError}
+            />
             <ScheduleSelectField
                 label='Scheduled Time'
                 description='Send emails now or schedule them up to four days
@@ -107,7 +158,17 @@ export default function Mail({ onSend, onError, errorMessage, success, user }) {
             />
             <Pane>
                 <Button
-                    onClick={() => setShowConfirm(true)}
+                    onClick={() => {
+                        const noneSelected =
+                            !demographicSelection.includeUndergrads &&
+                            !demographicSelection.includeGrads;
+                        if (noneSelected) {
+                            setShowDemographicError(true);
+                            return;
+                        }
+                        setShowDemographicError(false);
+                        setShowConfirm(true);
+                    }}
                     size='large'
                     appearance='primary'
                     float='right'
@@ -139,6 +200,9 @@ export default function Mail({ onSend, onError, errorMessage, success, user }) {
                         header,
                         body,
                         schedule,
+                        includeUndergrads:
+                            demographicSelection.includeUndergrads,
+                        includeGrads: demographicSelection.includeGrads,
                     });
                     setShowConfirm(false);
                 }}
@@ -153,14 +217,13 @@ export default function Mail({ onSend, onError, errorMessage, success, user }) {
                     alignItems='center'
                 >
                     <InfoSignIcon marginRight={10} />
-                    You are about to send an email to everyone at Princeton.
+                    {getDemographicConfirmationText()}
                 </Pane>
                 <Text>
                     Once you click <b>Send Email</b>, Hoagie will send the email
-                    to
-                    <b> all residential college listservs on your behalf</b>.
-                    Your name and NetID will be included at the bottom of the
-                    email regardless of the content.
+                    to <b>{getDemographicTargetText()} on your behalf</b>. Your
+                    name and NetID will be included at the bottom of the email
+                    regardless of the content.
                 </Text>
                 <Alert
                     intent='warning'
@@ -211,5 +274,12 @@ export default function Mail({ onSend, onError, errorMessage, success, user }) {
             </Dialog>
         </Pane>
     );
-    return success ? <SuccessPage schedule={schedule} /> : MailForm;
+    return success ? (
+        <SuccessPage
+            schedule={schedule}
+            demographicText={getDemographicSuccessText()}
+        />
+    ) : (
+        MailForm
+    );
 }

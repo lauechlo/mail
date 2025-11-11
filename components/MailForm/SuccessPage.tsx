@@ -3,7 +3,11 @@ import Link from 'next/link';
 
 import formatDateString from '@/components/MailForm/ScheduledSend/formatDateString';
 
-export default function SuccessPage({ digest = false, schedule = 'now' }) {
+export default function SuccessPage({
+    digest = false,
+    schedule = 'now',
+    demographicText = 'all students',
+}) {
     return (
         <Pane
             display='flex'
@@ -35,8 +39,8 @@ export default function SuccessPage({ digest = false, schedule = 'now' }) {
             {!digest && schedule === 'now' && (
                 <>
                     <Pane>
-                        Your email has been sent to all students and will be in
-                        your inbox shortly! We ask that you do not send any
+                        Your email has been sent to {demographicText} and will be
+                        in your inbox shortly! We ask that you do not send any
                         additional emails
                         <b> for the next few days</b> to avoid spam.
                         <br /> <br />
@@ -61,7 +65,7 @@ export default function SuccessPage({ digest = false, schedule = 'now' }) {
                 <>
                     <Pane>
                         Your email has been successfully scheduled! It will be
-                        sent to all students on
+                        sent to {demographicText} on
                         {` ${formatDateString(schedule)}`}. You can modify the
                         scheduled time or delete the email on the Scheduled
                         Emails page.
