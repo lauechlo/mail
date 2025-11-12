@@ -1,5 +1,5 @@
 import React from 'react';
-import { Pane, Heading, Button, Text, majorScale } from 'evergreen-ui';
+import { Pane, Heading, Text, majorScale } from 'evergreen-ui';
 import { TemplateType } from '../../types/template';
 import { EMAIL_TEMPLATES } from '../../constants/emailTemplates';
 
@@ -28,15 +28,6 @@ export const TemplateSelector: React.FC<TemplateSelectorProps> = ({
         marginBottom={majorScale(2)}
       >
         <Heading size={400}>✨ Start with a template</Heading>
-        <Button
-          appearance="minimal"
-          color="orange"
-          fontSize={13}
-          fontWeight={500}
-          paddingX={0}
-        >
-          Browse all →
-        </Button>
       </Pane>
 
       {/* Template Grid */}

@@ -1,11 +1,12 @@
 import React from 'react';
 import {
   FormField,
-  SelectField,
   Text,
   Pane,
   Badge,
   majorScale,
+  Checkbox,
+  Label,
 } from 'evergreen-ui';
 import { DemographicOption, DEMOGRAPHIC_OPTIONS } from '../../types/demographic';
 
@@ -20,8 +21,6 @@ export const DemographicSelector: React.FC<DemographicSelectorProps> = ({
   onChange,
   disabled = false,
 }) => {
-  const selectedOption = DEMOGRAPHIC_OPTIONS.find((opt) => opt.value === value);
-
   return (
     <Pane
       background="tint2"
@@ -46,30 +45,24 @@ export const DemographicSelector: React.FC<DemographicSelectorProps> = ({
       </Badge>
 
       <FormField marginBottom={0}>
-        <SelectField
-          label="Send to"
-          required
-          description={selectedOption?.description}
-          value={value}
-          onChange={(e) => onChange(e.target.value as DemographicOption)}
-          disabled={disabled}
-        >
-          {DEMOGRAPHIC_OPTIONS.map((option) => (
-            <option key={option.value} value={option.value}>
-              {option.label}
-            </option>
-          ))}
-        </SelectField>
+        <Label htmlFor="demographic-options" marginBottom={majorScale(1)} display="block">
+          Send to
+        </Label>
 
-        <Pane
-          display="flex"
-          gap={majorScale(1)}
-          marginTop={majorScale(2)}
-          flexWrap="wrap"
-        >
-          <Badge color="blue">📊 Targeted Distribution</Badge>
-          <Badge color="green">🎯 Better Engagement</Badge>
-          <Badge color="purple">📧 Reduced Email Fatigue</Badge>
+        <Pane display="flex" flexDirection="column" gap={majorScale(2)} marginTop={majorScale(2)}>
+          {DEMOGRAPHIC_OPTIONS.map((option) => (
+            <Pane key={option.value}>
+              <Checkbox
+                label={option.label}
+                checked={value === option.value}
+                onChange={() => onChange(option.value)}
+                disabled={disabled}
+              />
+              <Text size={300} color="muted" marginLeft={majorScale(3)} display="block">
+                {option.description}
+              </Text>
+            </Pane>
+          ))}
         </Pane>
 
         <Text size={300} color="muted" marginTop={majorScale(2)} display="block">
