@@ -16,7 +16,8 @@ import Link from 'next/link';
 import ErrorMessage from '@/components/ErrorMessage';
 import ScheduleSelectField from '@/components/MailForm/ScheduledSend/ScheduleSelectField';
 import SuccessPage from '@/components/MailForm/SuccessPage';
-import RichTextEditor from '@/components/RichSunEditor';
+import BlockEditor from '@/components/BlockEditor';
+import { EmailPreview } from '@/components/BlockEditor/EmailPreview';
 import { DemographicSelector } from '@/components/MailForm/DemographicSelector';
 import { TemplateSelector } from '@/components/MailForm/TemplateSelector';
 import { DemographicOption, DEMOGRAPHIC_OPTIONS } from '@/types/demographic';
@@ -40,6 +41,7 @@ export default function Mail({ onSend, onError, errorMessage, success, user }) {
     const [showTestConfirm, setShowTestConfirm] = useState(false);
     const [targetDemographic, setTargetDemographic] = useState<DemographicOption>('all');
     const [selectedTemplate, setSelectedTemplate] = useState<TemplateType>('blank');
+    const [showPreview, setShowPreview] = useState(false);
 
     useEffect(() => {
         if (!hasInteracted.current && header !== '') {
@@ -147,16 +149,33 @@ export default function Mail({ onSend, onError, errorMessage, success, user }) {
                 selectedTemplate={selectedTemplate}
                 onSelectTemplate={handleTemplateSelect}
             />
-            <RichTextEditor
-                onChange={(content) => setBody(content)}
-                onError={onError}
-                label='Body Content'
-                required
-                placeholder='Hello there!'
-                description={`
-        This is the content of your email. `}
-                value={body}
-            />
+
+            <Pane marginBottom={majorScale(2)}>
+                <Button
+                    onClick={() => setShowPreview(!showPreview)}
+                    appearance={showPreview ? 'primary' : 'default'}
+                    iconBefore={showPreview ? 'edit' : 'eye-open'}
+                >
+                    {showPreview ? 'Edit Email' : 'Preview Email'}
+                </Button>
+            </Pane>
+
+            {showPreview ? (
+                <EmailPreview
+                    content={body}
+                    subject={header}
+                    sender={sender}
+                />
+            ) : (
+                <BlockEditor
+                    onChange={(content) => setBody(content)}
+                    label='Body Content'
+                    required
+                    placeholder='Type / for commands like /event, /button, /divider...'
+                    description='Use slash commands (/) to insert special blocks like events, buttons, and more!'
+                    value={body}
+                />
+            )}
             <Pane>
                 <Button
                     onClick={() => setShowConfirm(true)}

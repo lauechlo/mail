@@ -13,12 +13,18 @@ export const EMAIL_TEMPLATES: EmailTemplate[] = [
     name: 'Event Invite',
     icon: '🎉',
     subjectTemplate: "You're Invited! [Event Name]",
-    bodyTemplate: `<p><strong>You're Invited! 🎉</strong></p>
-<p><strong>What:</strong> [Event Name]<br>
-<strong>When:</strong> [Date and Time]<br>
-<strong>Where:</strong> [Location]</p>
+    bodyTemplate: `<h1>You're Invited! 🎉</h1>
+<div class="event-block" style="background: #f9fafb; border: 2px solid #e5e7eb; border-radius: 8px; padding: 16px; margin: 16px 0;">
+<h3>📅 [Event Name]</h3>
+<p><strong>Date:</strong> [Add date]</p>
+<p><strong>Time:</strong> [Add time]</p>
+<p><strong>Location:</strong> [Add location]</p>
+<p><strong>RSVP:</strong> [Add link]</p>
+</div>
 <p>Join us for [brief description of the event]. This is a great opportunity to [key benefit/purpose].</p>
-<p><strong>RSVP:</strong> [Link or instructions]</p>
+<div style="text-align: center; margin: 24px 0;">
+<a href="#" style="display: inline-block; background: #FF6900; color: white; padding: 12px 32px; border-radius: 8px; text-decoration: none; font-weight: 600;">RSVP Now</a>
+</div>
 <p>Hope to see you there!</p>`,
   },
   {
@@ -59,12 +65,12 @@ export const EMAIL_TEMPLATES: EmailTemplate[] = [
     name: 'Reminder',
     icon: '⏰',
     subjectTemplate: 'Reminder: [Subject]',
-    bodyTemplate: `<p><strong>⏰ Reminder: [Subject]</strong></p>
+    bodyTemplate: `<h2>⏰ Reminder: [Subject]</h2>
 <p>Hi everyone,</p>
 <p>This is a friendly reminder that <strong>[deadline/event]</strong> is coming up on <strong>[date]</strong>.</p>
-<p style="background: #fff3cd; padding: 12px; border-radius: 6px; display: inline-block;">
-📅 <strong>Deadline:</strong> [Date and Time]
-</p>
+<div style="background: #FEF3C7; border-left: 4px solid #F59E0B; padding: 16px; margin: 16px 0; border-radius: 4px;">
+<p style="margin: 0;"><strong>⏰ Deadline:</strong> [Add date and details]</p>
+</div>
 <p>Please make sure to [action required].</p>
 <p>If you have any questions, please reach out to [contact].</p>`,
   },

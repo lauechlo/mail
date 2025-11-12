@@ -17,15 +17,27 @@
     },
     "dependencies": {
         "@auth0/nextjs-auth0": "^3.5.0",
+        "@tippyjs/react": "^4.2.6",
+        "@tiptap/extension-color": "^3.10.5",
+        "@tiptap/extension-dropcursor": "^3.10.5",
+        "@tiptap/extension-image": "^3.10.5",
+        "@tiptap/extension-link": "^3.10.5",
+        "@tiptap/extension-placeholder": "^3.10.5",
+        "@tiptap/extension-text-style": "^3.10.5",
+        "@tiptap/react": "^3.10.5",
+        "@tiptap/starter-kit": "^3.10.5",
+        "@tiptap/suggestion": "^3.10.5",
         "dompurify": "^3.2.1",
         "evergreen-ui": "^7.1.9",
         "next": "14.2.15",
         "next-pwa": "^5.6.0",
+        "novel": "^1.0.2",
         "react": "^18.3.1",
         "react-dom": "^18.3.1",
         "suneditor": "^2.47.0",
         "suneditor-react": "^3.6.1",
-        "swr": "^2.2.5"
+        "swr": "^2.2.5",
+        "tippy.js": "^6.3.7"
     },
     "devDependencies": {
         "@types/react": "^18.3.12",
