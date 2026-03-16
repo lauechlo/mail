@@ -2,8 +2,16 @@ import { Button, Pane } from 'evergreen-ui';
 import Link from 'next/link';
 
 import formatDateString from '@/components/MailForm/ScheduledSend/formatDateString';
+import CalendarEventFields from '@/components/MailForm/CalendarEventFields';
 
-export default function SuccessPage({ digest = false, schedule = 'now' }) {
+export default function SuccessPage({
+    digest = false,
+    schedule = 'now',
+    emailHeader = '',
+    senderName = '',
+    senderEmail = '',
+    emailBody = '',
+}) {
     return (
         <Pane
             display='flex'
@@ -50,6 +58,13 @@ export default function SuccessPage({ digest = false, schedule = 'now' }) {
                         </b>
                         .
                     </Pane>
+                    <CalendarEventFields
+                        emailHeader={emailHeader}
+                        senderName={senderName}
+                        senderEmail={senderEmail}
+                        schedule={schedule}
+                        emailBody={emailBody}
+                    />
                     <Link href='/'>
                         <Button appearance='primary' marginTop='30px'>
                             Back
@@ -76,6 +91,13 @@ export default function SuccessPage({ digest = false, schedule = 'now' }) {
                         </b>
                         .
                     </Pane>
+                    <CalendarEventFields
+                        emailHeader={emailHeader}
+                        senderName={senderName}
+                        senderEmail={senderEmail}
+                        schedule={schedule}
+                        emailBody={emailBody}
+                    />
                     <Link href='/'>
                         <Button appearance='primary' marginTop='30px'>
                             Back

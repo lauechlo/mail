@@ -211,5 +211,13 @@ export default function Mail({ onSend, onError, errorMessage, success, user }) {
             </Dialog>
         </Pane>
     );
-    return success ? <SuccessPage schedule={schedule} /> : MailForm;
+    return success ? (
+        <SuccessPage
+            schedule={schedule}
+            emailHeader={header}
+            senderName={sender}
+            senderEmail={user.email}
+            emailBody={body}
+        />
+    ) : MailForm;
 }
